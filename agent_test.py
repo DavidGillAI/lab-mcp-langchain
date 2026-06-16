@@ -7,10 +7,12 @@ from langchain.agents import create_agent
 
 load_dotenv()
 
+# Load MCP resource information
 async def test_resources(client):
     resources = await client.get_resources()
     return resources[0].as_string()
 
+# Connect to MCP server
 async def main():
     client = MultiServerMCPClient(
         {
@@ -21,11 +23,11 @@ async def main():
             }
         }
     )
-
+# Load available MCP tools
     tools = await client.get_tools()
 
     llm = ChatOpenAI(model="gpt-4o-mini")
-
+# Create LangChain agent with MCP tools
     agent = create_agent(
         
         model=llm,
@@ -34,7 +36,7 @@ async def main():
 
     print(f"Loaded {len(tools)} tool(s)")
     print("Agent created")
-   
+ # Retrieve MCP resource content and use it as context
     resource_text = await test_resources(client)
 
     print(resource_text)
