@@ -7,6 +7,10 @@ from langchain.agents import create_agent
 
 load_dotenv()
 
+async def test_resources(client):
+    resources = await client.get_resources()
+    print(resources)
+
 async def main():
     client = MultiServerMCPClient(
         {
@@ -23,12 +27,15 @@ async def main():
     llm = ChatOpenAI(model="gpt-4o-mini")
 
     agent = create_agent(
+        
         model=llm,
         tools=tools,
     )
 
     print(f"Loaded {len(tools)} tool(s)")
     print("Agent created")
+   
+    await test_resources(client)
 
     response = await agent.ainvoke(
     {
