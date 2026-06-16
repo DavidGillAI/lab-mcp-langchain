@@ -9,7 +9,7 @@ load_dotenv()
 
 async def test_resources(client):
     resources = await client.get_resources()
-    print(resources)
+    return resources[0].as_string()
 
 async def main():
     client = MultiServerMCPClient(
@@ -35,15 +35,21 @@ async def main():
     print(f"Loaded {len(tools)} tool(s)")
     print("Agent created")
    
-    await test_resources(client)
+    resource_text = await test_resources(client)
+
+    print(resource_text)
 
     response = await agent.ainvoke(
     {
         "messages": [
-            {
-                "role": "user",
-                "content": "What is 23 plus 19?"
-            }
+    {
+        "role": "system",
+        "content": f"Resource information: {resource_text}"
+    },
+    {
+        "role": "user",
+        "content": "Explain what this MCP server can do, then calculate 23 plus 19."
+    }
         ]
     }
 )
